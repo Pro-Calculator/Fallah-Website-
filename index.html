@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فضای من</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-soft: #eef2ff;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-muted: #94a3b8;
+    --shadow: 0 4px 24px rgba(99,102,241,0.10);
+    --radius: 2rem;
+    --radius-sm: 1rem;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Vazirmatn', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+  }
+  /* ============ LOGIN PAGE ============ */
+  #loginPage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #eef2ff 0%, #f0fdf4 50%, #fef3c7 100%);
+    padding: 2rem;
+  }
+  .login-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(99,102,241,0.15);
+    border: 1.5px solid rgba(99,102,241,0.1);
+  }
+  .login-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .login-logo .logo-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 24px rgba(99,102,241,0.3);
+  }
+  .login-logo h1 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+  .login-logo p { color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem; }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 1rem;
+    background: var(--bg);
+    color: var(--text);
+    transition: all 0.3s;
+    outline: none;
+    direction: rtl;
+  }
+  .form-group input:focus {
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+  }
+  .form-group input.error { border-color: var(--danger); }
+  .extra-fields { overflow: hidden; max-height: 0; transition: max-height 0.5s ease, opacity 0.4s ease; opacity: 0; }
+  .extra-fields.show { max-height: 300px; opacity: 1; }
+  .btn {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.4); }
+  .btn-primary:active { transform: translateY(0); }
+  .error-msg { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+  .admin-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    margin-right: 0.5rem;
+    font-weight: 600;
+  }
+  /* ============ MAIN APP ============ */
+  #app { display: none; min-height: 100vh; background: var(--bg); }
+  /* Header */
+  .app-header {
+    background: white;
+    border-bottom: 1.5px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .app-header .logo { font-size: 1.25rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+  .app-header .logo span { background: linear-gradient(135deg,var(--primary),var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header-actions { display: flex; align-items: center; gap: 1rem; }
+  .user-chip {
+    background: var(--primary-soft);
+    color: var(--primary);
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .btn-logout {
+    background: #fef2f2;
+    color: var(--danger);
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    font-family: 'Vazirmatn',sans-serif;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .btn-logout:hover { background: var(--danger); color: white; }
+  /* Nav Tabs */
+  .app-nav {
+    background: white;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1.5px solid var(--border);
+    overflow-x: auto;
+  }
+  .nav-tab {
+    padding: 0.875rem 1.25rem;
+    border: none;
+    background: none;
+    font-family: 'Vazirmatn',sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .nav-tab:hover { color: var(--primary); }
+  /* Content Grid */
+  .app-main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .section-title { font-size: 1.25rem; font-weight: 700; }
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+    gap: 1.25rem;
+  }
+  .content-card {
+    background: white;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .content-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(99,102,241,0.15); }
+  .card-media {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    background: var(--primary-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+  .card-media img, .card-media video { width:100%; height:100%; object-fit:cover; }
+  .card-media audio-thumb { width:100%; height:100%; background: linear-gradient(135deg,#eef2ff,#c7d2fe); display:flex; align-items:center; justify-content:center; font-size:3rem; }
+  .card-body { padding: 1.25rem; }
+  .card-type {
+    display: inline-block;
+    padding: 0.2rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .type-image { background:#fef3c7; color:#d97706; }
+  .type-video { background:#fce7f3; color:#be185d; }
+  .type-audio { background:#ecfdf5; color:#059669; }
+  .type-poem { background:#f0f9ff; color:#0284c7; }
+  .type-text { background:#f5f3ff; color:#7c3aed; }
+  .card-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem; }
+  .card-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+  .card-date { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.75rem; }
+  .card-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+  .btn-sm {
+    padding: 0.4rem 0.875rem;
+    border: none;
+    border-radius: 2rem;
+    font-family: 'Vazirmatn',sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-view { background: var(--primary-soft); color: var(--primary); }
+  .btn-view:hover { background: var(--primary); color: white; }
+  .btn-delete { background: #fef2f2; color: var(--danger); }
+  .btn-delete:hover { background: var(--danger); color: white; }
+  .btn-edit { background: #fffbeb; color: var(--accent); }
+  .btn-edit:hover { background: var(--accent); color: white; }
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+  .empty-state .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
+  /* ============ ADMIN PANEL ============ */
+  #adminPage { display: none; min-height: 100vh; background: #f1f5f9; }
+  .admin-layout { display: flex; min-height: 100vh; }
+  /* Sidebar */
+  .admin-sidebar {
+    width: 260px;
+    background: white;
+    border-left: 1.5px solid var(--border);
+    padding: 1.5rem;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 50;
+  }
+  .sidebar-logo { font-size: 1.1rem; font-weight: 700; color: var(--primary); padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .sidebar-badge { background: linear-gradient(135deg,#fbbf24,#f59e0b); color:white; font-size:0.7rem; padding:0.2rem 0.5rem; border-radius:2rem; font-weight:600; }
+  .sidebar-menu { list-style: none; }
+  .sidebar-menu li { margin-bottom: 0.25rem; }
+  .sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .sidebar-menu a:hover, .sidebar-menu a.active { background: var(--primary-soft); color: var(--primary); }
+  .sidebar-menu a .icon { font-size: 1.1rem; width: 1.5rem; text-align: center; }
+  /* Admin Main */
+  .admin-main {
+    flex: 1;
+    margin-right: 260px;
+    padding: 2rem;
+  }
+  .admin-topbar {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .admin-topbar h2 { font-size: 1.25rem; font-weight: 700; }
+  .admin-section { display: none; }
+  .admin-section.active { display: block; }
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+  }
+  .stat-card .stat-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .stat-card .stat-num { font-size: 2rem; font-weight: 700; color: var(--primary); }
+  .stat-card .stat-label { font-size: 0.875rem; color: var(--text-muted); }
+  /* Upload Form */
+  .upload-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .upload-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group select {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Vazirmatn',sans-serif;
+    font-size: 1rem;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    direction: rtl;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .form-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.12); }
+  .form-group textarea {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Vazirmatn',sans-serif;
+    font-size: 1rem;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    direction: rtl;
+    resize: vertical;
+    transition: all 0.3s;
+  }
+  .form-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.12); }
+  .file-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: var(--bg);
+  }
+  .file-upload-area:hover, .file-upload-area.dragover { border-color: var(--primary); background: var(--primary-soft); }
+  .file-upload-area input { display: none; }
+  .file-upload-area .upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .file-upload-area p { color: var(--text-muted); font-size: 0.875rem; }
+  .file-upload-area strong { color: var(--primary); }
+  /* Admin content list */
+  .admin-table { width: 100%; border-collapse: collapse; }
+  .admin-table th { background: var(--primary-soft); color: var(--primary); padding: 0.875rem 1rem; text-align: right; font-size: 0.875rem; font-weight: 600; }
+  .admin-table th:first-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+  .admin-table th:last-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+  .admin-table td { padding: 0.875rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.875rem; vertical-align: middle; }
+  .admin-table tr:hover td { background: #fafafa; }
+  /* Customize settings */
+  .settings-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .settings-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--primary); }
+  .color-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+  .color-row label { min-width: 150px; font-size: 0.875rem; font-weight: 500; }
+  .color-row input[type="color"] { width: 48px; height: 36px; border: 2px solid var(--border); border-radius: 0.5rem; cursor: pointer; padding: 2px; }
+  /* Modal */
+  .modal-overlay {
+    position: fixed; top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    display: none;
+    padding: 1rem;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+  }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .modal-header h3 { font-size: 1.1rem; font-weight: 700; }
+  .btn-close { background: #fef2f2; color: var(--danger); border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; }
+  .modal-media { width: 100%; border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 1rem; }
+  .modal-media img { width: 100%; max-height: 400px; object-fit: contain; background: #f8fafc; }
+  .modal-media video, .modal-media audio { width: 100%; }
+  .poem-text { background: var(--bg); padding: 1.5rem; border-radius: var(--radius-sm); font-size: 1rem; line-height: 2; white-space: pre-wrap; }
+  /* Progress bar */
+  .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 1rem; display: none; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg,var(--primary),var(--primary-light)); border-radius: 3px; transition: width 0.3s; width: 0%; }
+  /* Toast */
+  .toast-container { position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
+  .toast {
+    background: white;
+    padding: 0.875rem 1.5rem;
+    border-radius: 2rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    border: 1.5px solid var(--border);
+  }
+  .toast.success { border-color: var(--success); color: var(--success); }
+  .toast.error { border-color: var(--danger); color: var(--danger); }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+  /* Responsive */
+  @media (max-width: 768px) {
+    .admin-sidebar { transform: translateX(100%); transition: transform 0.3s; }
+    .admin-sidebar.open { transform: translateX(0); }
+    .admin-main { margin-right: 0; }
+    .form-row { grid-template-columns: 1fr; }
+    .app-main { padding: 1rem; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+  /* Poem card special */
+  .poem-preview { background: linear-gradient(135deg,#f0f9ff,#e0f2fe); padding: 1rem; font-size: 0.875rem; line-height: 2; border-radius: var(--radius-sm); }
+  /* animation */
+  .fade-in { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  /* Loading spinner */
+  .spinner { display:inline-block; width:20px; height:20px; border:3px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  /* Search */
+  .search-box {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    border: 2px solid var(--border);
+    border-radius: 2rem;
+    font-family: 'Vazirmatn',sans-serif;
+    font-size: 0.875rem;
+    background: white;
+    color: var(--text);
+    outline: none;
+    transition: all 0.3s;
+    direction: rtl;
+  }
+  .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.12); }
+  .search-box .search-icon { position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted); }
+  .audio-player { width:100%; margin-top:0.5rem; }
+  .inline-audio { width:100%; }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN PAGE ===================== -->
+<div id="loginPage">
+  <div class="login-card fade-in">
+    <div class="login-logo">
+      <div class="logo-circle">🌟</div>
+      <h1>فضای من</h1>
+      <p>پلتفرم اشتراک‌گذاری محتوا</p>
+    </div>
+    <div id="loginForm">
+      <div class="form-group">
+        <label>نام</label>
+        <input type="text" id="firstName" placeholder="نام خود را وارد کنید" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>نام خانوادگی</label>
+        <input type="text" id="lastName" placeholder="نام خانوادگی خود را وارد کنید" autocomplete="off">
+      </div>
+      <!-- Extra admin fields - hidden initially -->
+      <div class="extra-fields" id="extraFields">
+        <div class="form-group">
+          <label>شماره تلفن <span class="admin-badge">ادمین</span></label>
+          <input type="tel" id="adminPhone" placeholder="شماره تلفن را وارد کنید" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>کد ادمین <span class="admin-badge">ادمین</span></label>
+          <input type="password" id="adminCode" placeholder="کد ادمین را وارد کنید" autocomplete="off">
+        </div>
+      </div>
+      <div class="error-msg" id="loginError">اطلاعات وارد شده صحیح نیست!</div>
+      <div style="margin-top:1.5rem;">
+        <button class="btn btn-primary" onclick="handleLogin()">ورود به سایت</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MAIN APP ===================== -->
+<div id="app">
+  <header class="app-header">
+    <div class="logo">
+      <span>🌟 فضای من</span>
+    </div>
+    <div class="header-actions">
+      <div class="user-chip" id="userChip">👤 کاربر</div>
+      <button class="btn-logout" onclick="logout()">خروج</button>
+    </div>
+  </header>
+  <nav class="app-nav">
+    <button class="nav-tab active" onclick="filterContent('all',this)">همه محتوا</button>
+    <button class="nav-tab" onclick="filterContent('image',this)">🖼️ تصاویر</button>
+    <button class="nav-tab" onclick="filterContent('video',this)">🎬 ویدیوها</button>
+    <button class="nav-tab" onclick="filterContent('audio',this)">🎵 آهنگ‌ها</button>
+    <button class="nav-tab" onclick="filterContent('poem',this)">📜 اشعار</button>
+    <button class="nav-tab" onclick="filterContent('text',this)">📝 متن‌ها</button>
+  </nav>
+  <main class="app-main">
+    <div class="section-header">
+      <h2 class="section-title" id="siteTitle">محتوای سایت</h2>
+    </div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="جستجو در محتوا..." oninput="searchContent(this.value)">
+    </div>
+    <div class="content-grid" id="contentGrid">
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-icon">📭</div>
+        <p>هنوز محتوایی بارگذاری نشده است</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ===================== ADMIN PANEL ===================== -->
+<div id="adminPage">
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-logo">🛡️ پنل ادمین <span class="sidebar-badge">حسن فلاح</span></div>
+      <ul class="sidebar-menu">
+        <li><a onclick="showAdminSection('dashboard')" class="active"><span class="icon">📊</span> داشبورد</a></li>
+        <li><a onclick="showAdminSection('upload')"><span class="icon">⬆️</span> آپلود محتوا</a></li>
+        <li><a onclick="showAdminSection('contents')"><span class="icon">📁</span> مدیریت محتوا</a></li>
+        <li><a onclick="showAdminSection('customize')"><span class="icon">🎨</span> شخصی‌سازی</a></li>
+        <li><a onclick="goToSite()"><span class="icon">🌐</span> مشاهده سایت</a></li>
+        <li><a onclick="logout()" style="color:#ef4444;"><span class="icon">🚪</span> خروج</a></li>
+      </ul>
+    </aside>
+    <!-- Main -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <h2 id="adminSectionTitle">داشبورد</h2>
+        <div style="font-size:0.8rem;color:var(--text-muted);">خوش آمدید، حسن فلاح 👋</div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="admin-section active" id="sec-dashboard">
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="upload-card">
+          <h3>📢 آخرین محتواهای بارگذاری شده</h3>
+          <div id="recentContentAdmin"></div>
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div class="admin-section" id="sec-upload">
+        <div class="upload-card">
+          <h3>⬆️ آپلود محتوای جدید</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>نوع محتوا</label>
+              <select id="uploadType" onchange="handleTypeChange()">
+                <option value="image">🖼️ تصویر</option>
+                <option value="video">🎬 ویدیو</option>
+                <option value="audio">🎵 آهنگ</option>
+                <option value="poem">📜 شعر</option>
+                <option value="text">📝 متن</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>عنوان محتوا</label>
+              <input type="text" id="uploadTitle" placeholder="عنوان را وارد کنید">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>توضیحات (اختیاری)</label>
+            <textarea id="uploadDesc" rows="3" placeholder="توضیحات محتوا را وارد کنید..."></textarea>
+          </div>
+          <!-- File upload -->
+          <div id="fileSection">
+            <div class="form-group">
+              <label>فایل</label>
+              <div class="file-upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave()">
+                <input type="file" id="fileInput" onchange="handleFileSelect(event)">
+                <div class="upload-icon">📎</div>
+                <p><strong>کلیک کنید</strong> یا فایل را اینجا بکشید</p>
+                <p id="fileHint" style="margin-top:0.25rem;font-size:0.8rem;">حداکثر حجم ویدیو: 100 مگابایت</p>
+                <div id="selectedFileName" style="margin-top:0.5rem;color:var(--primary);font-weight:600;"></div>
+              </div>
+              <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+            </div>
+          </div>
+          <!-- Text/Poem section -->
+          <div id="textSection" style="display:none;">
+            <div class="form-group">
+              <label>متن / شعر</label>
+              <textarea id="uploadTextContent" rows="8" placeholder="متن یا شعر خود را اینجا بنویسید..."></textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="uploadContent()" id="uploadBtn" style="max-width:200px;">
+            <span id="uploadBtnText">آپلود محتوا</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Contents Management -->
+      <div class="admin-section" id="sec-contents">
+        <div class="upload-card">
+          <h3>📁 مدیریت تمام محتوا</h3>
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="جستجو..." oninput="searchAdminContent(this.value)">
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table" id="adminContentTable">
+              <thead>
+                <tr>
+                  <th>عنوان</th>
+                  <th>نوع</th>
+                  <th>تاریخ</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="adminContentBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customize -->
+      <div class="admin-section" id="sec-customize">
+        <div class="settings-card">
+          <h3>✏️ شخصی‌سازی متن‌های سایت</h3>
+          <div class="form-group">
+            <label>نام سایت (نمایش در هدر)</label>
+            <input type="text" id="setSiteName" value="فضای من" oninput="liveCustomize()">
+          </div>
+          <div class="form-group">
+            <label>عنوان اصلی صفحه</label>
+            <input type="text" id="setSiteTitle" value="محتوای سایت" oninput="liveCustomize()">
+          </div>
+          <div class="form-group">
+            <label>توضیح لوگین</label>
+            <input type="text" id="setLoginDesc" value="پلتفرم اشتراک‌گذاری محتوا" oninput="liveCustomize()">
+          </div>
+        </div>
+        <div class="settings-card">
+          <h3>🎨 رنگ‌بندی سایت</h3>
+          <div class="color-row">
+            <label>رنگ اصلی</label>
+            <input type="color" id="colorPrimary" value="#6366f1" oninput="applyColors()">
+            <span id="colorPrimaryHex">#6366f1</span>
+          </div>
+          <div class="color-row">
+            <label>رنگ پس‌زمینه</label>
+            <input type="color" id="colorBg" value="#f8fafc" oninput="applyColors()">
+            <span id="colorBgHex">#f8fafc</span>
+          </div>
+          <div class="color-row">
+            <label>رنگ متن</label>
+            <input type="color" id="colorText" value="#1e293b" oninput="applyColors()">
+            <span id="colorTextHex">#1e293b</span>
+          </div>
+          <button class="btn btn-primary" style="max-width:200px;margin-top:1rem;" onclick="saveCustomize()">💾 ذخیره تنظیمات</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for viewing content -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal fade-in">
+    <div class="modal-header">
+      <h3 id="modalTitle">عنوان</h3>
+      <button class="btn-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ===================== STATE =====================
+let currentUser = null;
+let isAdmin = false;
+let contents = [];
+let settings = {
+  siteName: 'فضای من',
+  siteTitle: 'محتوای سایت',
+  loginDesc: 'پلتفرم اشتراک‌گذاری محتوا',
+  primaryColor: '#6366f1',
+  bgColor: '#f8fafc',
+  textColor: '#1e293b'
+};
+let currentFilter = 'all';
+let selectedFile = null;
+let loginAttempts = 0;
+let loginLocked = false;
+let lockTimer = null;
+
+// ===================== STORAGE =====================
+function saveToStorage() {
+  try {
+    localStorage.setItem('fazayi_contents', JSON.stringify(contents));
+    localStorage.setItem('fazayi_settings', JSON.stringify(settings));
+  } catch(e) {}
+}
+
+function loadFromStorage() {
+  try {
+    const c = localStorage.getItem('fazayi_contents');
+    if(c) contents = JSON.parse(c);
+    const s = localStorage.getItem('fazayi_settings');
+    if(s) settings = {...settings, ...JSON.parse(s)};
+    applySettings();
+  } catch(e) {}
+}
+
+// ===================== LOGIN =====================
+const ADMIN_FIRST = 'حسن';
+const ADMIN_LAST = 'فلاح';
+const ADMIN_PHONE = '09188197097';
+const ADMIN_CODE = 'ABC1213149087HAS';
+let adminFieldsShown = false;
+
+// Watch name fields
+document.getElementById('firstName').addEventListener('input', checkAdminTrigger);
+document.getElementById('lastName').addEventListener('input', checkAdminTrigger);
+
+function checkAdminTrigger() {
+  const fn = document.getElementById('firstName').value.trim();
+  const ln = document.getElementById('lastName').value.trim();
+  if(fn === ADMIN_FIRST && ln === ADMIN_LAST && !adminFieldsShown) {
+    adminFieldsShown = true;
+    document.getElementById('extraFields').classList.add('show');
+    showToast('🔐 اطلاعات ادمین نیاز است', 'success');
+  } else if((fn !== ADMIN_FIRST || ln !== ADMIN_LAST) && adminFieldsShown) {
+    adminFieldsShown = false;
+    document.getElementById('extraFields').classList.remove('show');
+  }
+}
+
+// Rate limiting + brute force protection
+function handleLogin() {
+  if(loginLocked) {
+    showToast('⛔ تعداد تلاش‌های بیش از حد. لطفاً صبر کنید.', 'error');
+    return;
+  }
+  const fn = sanitize(document.getElementById('firstName').value.trim());
+  const ln = sanitize(document.getElementById('lastName').value.trim());
+  if(!fn || !ln) {
+    showError('لطفاً نام و نام خانوادگی را وارد کنید');
+    return;
+  }
+  // Check admin
+  if(fn === ADMIN_FIRST && ln === ADMIN_LAST) {
+    const phone = document.getElementById('adminPhone').value.trim();
+    const code = document.getElementById('adminCode').value.trim();
+    if(phone === ADMIN_PHONE && code === ADMIN_CODE) {
+      loginAttempts = 0;
+      currentUser = fn + ' ' + ln;
+      isAdmin = true;
+      hideError();
+      enterAdmin();
+      return;
+    } else {
+      loginAttempts++;
+      if(loginAttempts >= 5) lockLogin();
+      showError('شماره تلفن یا کد ادمین اشتباه است! (' + (5-loginAttempts) + ' تلاش باقی‌مانده)');
+      return;
+    }
+  }
+  // Regular user
+  loginAttempts = 0;
+  currentUser = fn + ' ' + ln;
+  isAdmin = false;
+  hideError();
+  enterApp();
+}
+
+function lockLogin() {
+  loginLocked = true;
+  showToast('⛔ ورود موقتاً قفل شد (۳۰ ثانیه)', 'error');
+  setTimeout(() => {
+    loginLocked = false;
+    loginAttempts = 0;
+    showToast('🔓 قفل ورود برداشته شد', 'success');
+  }, 30000);
+}
+
+function sanitize(str) {
+  return str.replace(/[<>\"'&;]/g, '');
+}
+
+function showError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function hideError() {
+  document.getElementById('loginError').style.display = 'none';
+}
+
+// Enter on keydown
+document.addEventListener('keydown', function(e) {
+  if(e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') {
+    handleLogin();
+  }
+});
+
+// ===================== NAVIGATION =====================
+function enterApp() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('userChip').textContent = '👤 ' + currentUser;
+  loadSettings();
+  renderContents();
+  showToast('خوش آمدید، ' + currentUser + ' 🎉', 'success');
+}
+
+function enterAdmin() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('adminPage').style.display = 'block';
+  loadSettings();
+  updateDashboard();
+  renderAdminTable();
+  showToast('🛡️ ورود به پنل ادمین موفق بود!', 'success');
+}
+
+function goToSite() {
+  document.getElementById('adminPage').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('userChip').textContent = '🛡️ حسن فلاح (ادمین)';
+  renderContents();
+}
+
+function logout() {
+  currentUser = null;
+  isAdmin = false;
+  selectedFile = null;
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('adminPage').style.display = 'none';
+  document.getElementById('firstName').value = '';
+  document.getElementById('lastName').value = '';
+  document.getElementById('adminPhone').value = '';
+  document.getElementById('adminCode').value = '';
+  document.getElementById('extraFields').classList.remove('show');
+  adminFieldsShown = false;
+  hideError();
+}
+
+// ===================== CONTENT RENDERING =====================
+function filterContent(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderContents();
+}
+
+function getFilteredContents(query='') {
+  let filtered = currentFilter === 'all' ? [...contents] : contents.filter(c => c.type === currentFilter);
+  if(query) {
+    const q = query.toLowerCase();
+    filtered = filtered.filter(c => c.title.toLowerCase().includes(q) || (c.desc||'').toLowerCase().includes(q));
+  }
+  return filtered.sort((a,b) => b.timestamp - a.timestamp);
+}
+
+function renderContents(query='') {
+  const grid = document.getElementById('contentGrid');
+  const filtered = getFilteredContents(query);
+  if(!filtered.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📭</div><p>محتوایی برای نمایش وجود ندارد</p></div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(c => renderCard(c, false)).join('');
+}
+
+function renderCard(c, isAdmin) {
+  const typeLabel = {image:'تصویر',video:'ویدیو',audio:'آهنگ',poem:'شعر',text:'متن'}[c.type];
+  const typeClass = 'type-'+c.type;
+  let mediaHtml = '';
+  if(c.type==='image' && c.dataUrl) {
+    mediaHtml = `<div class="card-media" style="height:160px;"><img src="${escHtml(c.dataUrl)}" alt="${escHtml(c.title)}" loading="lazy"></div>`;
+  } else if(c.type==='video' && c.dataUrl) {
+    mediaHtml = `<div class="card-media" style="height:160px;background:#1e293b;"><video src="${escHtml(c.dataUrl)}" style="width:100%;height:100%;object-fit:cover;"></video></div>`;
+  } else if(c.type==='audio') {
+    mediaHtml = `<div class="card-media" style="height:80px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);font-size:2.5rem;display:flex;align-items:center;justify-content:center;">🎵</div>`;
+  } else if(c.type==='poem') {
+    mediaHtml = `<div class="card-media" style="height:80px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);font-size:2.5rem;display:flex;align-items:center;justify-content:center;">📜</div>`;
+  } else if(c.type==='text') {
+    mediaHtml = `<div class="card-media" style="height:80px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);font-size:2.5rem;display:flex;align-items:center;justify-content:center;">📝</div>`;
+  }
+  const adminBtns = isAdmin ? `<button class="btn-sm btn-edit" onclick="editContent('${c.id}')">✏️ ویرایش</button><button class="btn-sm btn-delete" onclick="deleteContent('${c.id}')">🗑️ حذف</button>` : '';
+  return `
+  <div class="content-card fade-in" data-id="${c.id}">
+    ${mediaHtml}
+    <div class="card-body">
+      <span class="card-type ${typeClass}">${typeLabel}</span>
+      <div class="card-title">${escHtml(c.title)}</div>
+      ${c.desc ? `<div class="card-desc">${escHtml(c.desc.substring(0,100))}${c.desc.length>100?'...':''}</div>` : ''}
+      ${c.type==='audio' && c.dataUrl ? `<audio class="inline-audio" controls src="${escHtml(c.dataUrl)}"></audio>` : ''}
+      ${(c.type==='poem'||c.type==='text') && c.textContent ? `<div class="poem-preview">${escHtml(c.textContent.substring(0,150))}${c.textContent.length>150?'...':''}</div>` : ''}
+      <div class="card-date">📅 ${new Date(c.timestamp).toLocaleDateString('fa-IR')}</div>
+      <div class="card-actions">
+        <button class="btn-sm btn-view" onclick="viewContent('${c.id}')">👁️ مشاهده</button>
+        ${adminBtns}
+      </div>
+    </div>
+  </div>`;
+}
+
+function escHtml(str) {
+  if(!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function searchContent(query) { renderContents(query); }
+
+// ===================== VIEW MODAL =====================
+function viewContent(id) {
+  const c = contents.find(x => x.id === id);
+  if(!c) return;
+  document.getElementById('modalTitle').textContent = c.title;
+  let body = '';
+  if(c.type==='image' && c.dataUrl) {
+    body = `<div class="modal-media"><img src="${escHtml(c.dataUrl)}" style="width:100%;max-height:500px;object-fit:contain;border-radius:1rem;background:#f8fafc;"></div>`;
+  } else if(c.type==='video' && c.dataUrl) {
+    body = `<div class="modal-media"><video controls src="${escHtml(c.dataUrl)}" style="width:100%;border-radius:1rem;"></video></div>`;
+  } else if(c.type==='audio' && c.dataUrl) {
+    body = `<div style="text-align:center;padding:2rem;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-radius:1rem;margin-bottom:1rem;font-size:4rem;">🎵</div><audio controls src="${escHtml(c.dataUrl)}" class="audio-player"></audio>`;
+  } else if(c.type==='poem' || c.type==='text') {
+    body = `<div class="poem-text">${escHtml(c.textContent||'')}</div>`;
+  }
+  if(c.desc) body += `<p style="margin-top:1rem;color:var(--text-muted);font-size:0.875rem;line-height:1.7;">${escHtml(c.desc)}</p>`;
+  body += `<p style="margin-top:0.75rem;font-size:0.75rem;color:var(--text-muted);">📅 ${new Date(c.timestamp).toLocaleDateString('fa-IR')}</p>`;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('viewModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('viewModal').classList.remove('show');
+  // Stop any playing media
+  document.querySelectorAll('#modalBody video, #modalBody audio').forEach(m => m.pause());
+}
+
+document.getElementById('viewModal').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
+
+// ===================== ADMIN FUNCTIONS =====================
+function showAdminSection(name) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  const titles = {dashboard:'داشبورد',upload:'آپلود محتوا',contents:'مدیریت محتوا',customize:'شخصی‌سازی'};
+  document.getElementById('adminSectionTitle').textContent = titles[name] || name;
+  if(name==='contents') renderAdminTable();
+  if(name==='dashboard') updateDashboard();
+  if(name==='customize') loadCustomizeForm();
+}
+
+function updateDashboard() {
+  const types = ['image','video','audio','poem','text'];
+  const icons = {image:'🖼️',video:'🎬',audio:'🎵',poem:'📜',text:'📝'};
+  const labels = {image:'تصویر',video:'ویدیو',audio:'آهنگ',poem:'شعر',text:'متن'};
+  let html = `<div class="stat-card"><div class="stat-icon">📦</div><div class="stat-num">${contents.length}</div><div class="stat-label">کل محتوا</div></div>`;
+  types.forEach(t => {
+    const cnt = contents.filter(c=>c.type===t).length;
+    html += `<div class="stat-card"><div class="stat-icon">${icons[t]}</div><div class="stat-num">${cnt}</div><div class="stat-label">${labels[t]}</div></div>`;
+  });
+  document.getElementById('statsGrid').innerHTML = html;
+  // recent
+  const recent = [...contents].sort((a,b)=>b.timestamp-a.timestamp).slice(0,5);
+  if(!recent.length) {
+    document.getElementById('recentContentAdmin').innerHTML = '<p style="color:var(--text-muted);font-size:0.875rem;">هنوز محتوایی وجود ندارد</p>';
+    return;
+  }
+  document.getElementById('recentContentAdmin').innerHTML = recent.map(c=>`
+    <div style="display:flex;align-items:center;gap:1rem;padding:0.75rem 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:1.5rem;">${{image:'🖼️',video:'🎬',audio:'🎵',poem:'📜',text:'📝'}[c.type]}</span>
+      <div style="flex:1;"><div style="font-weight:600;font-size:0.875rem;">${escHtml(c.title)}</div><div style="font-size:0.75rem;color:var(--text-muted);">${new Date(c.timestamp).toLocaleDateString('fa-IR')}</div></div>
+      <button class="btn-sm btn-delete" onclick="deleteContent('${c.id}');updateDashboard()">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function renderAdminTable(query='') {
+  let filtered = query ? contents.filter(c=>c.title.toLowerCase().includes(query.toLowerCase())) : contents;
+  filtered = [...filtered].sort((a,b)=>b.timestamp-a.timestamp);
+  const typeLabel = {image:'🖼️ تصویر',video:'🎬 ویدیو',audio:'🎵 آهنگ',poem:'📜 شعر',text:'📝 متن'};
+  document.getElementById('adminContentBody').innerHTML = filtered.length ? filtered.map(c=>`
+    <tr>
+      <td><strong>${escHtml(c.title)}</strong>${c.desc?`<br><small style="color:var(--text-muted);">${escHtml(c.desc.substring(0,50))}</small>`:''}</td>
+      <td><span class="card-type type-${c.type}">${typeLabel[c.type]}</span></td>
+      <td style="white-space:nowrap;">${new Date(c.timestamp).toLocaleDateString('fa-IR')}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn-sm btn-view" onclick="viewContent('${c.id}')">👁️</button>
+        <button class="btn-sm btn-edit" onclick="editContentModal('${c.id}')">✏️</button>
+        <button class="btn-sm btn-delete" onclick="deleteContent('${c.id}');renderAdminTable()">🗑️</button>
+      </td>
+    </tr>
+  `).join('') : `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:2rem;">محتوایی وجود ندارد</td></tr>`;
+}
+
+function searchAdminContent(q) { renderAdminTable(q); }
+
+// ===================== UPLOAD =====================
+function handleTypeChange() {
+  const type = document.getElementById('uploadType').value;
+  if(type==='text'||type==='poem') {
+    document.getElementById('fileSection').style.display = 'none';
+    document.getElementById('textSection').style.display = 'block';
+  } else {
+    document.getElementById('fileSection').style.display = 'block';
+    document.getElementById('textSection').style.display = 'none';
+  }
+  // Update hint
+  const hints = {image:'تصاویر: JPG, PNG, GIF, WebP',video:'ویدیو: MP4, WebM (حداکثر 100 مگابایت)',audio:'آهنگ: MP3, WAV, OGG, M4A'};
+  document.getElementById('fileHint').textContent = hints[type] || '';
+  selectedFile = null;
+  document.getElementById('selectedFileName').textContent = '';
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.add('dragover');
+}
+function handleDragLeave() { document.getElementById('dropZone').classList.remove('dragover'); }
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('dragover');
+  const files = e.dataTransfer.files;
+  if(files.length) processFile(files[0]);
+}
+function handleFileSelect(e) {
+  if(e.target.files.length) processFile(e.target.files[0]);
+}
+
+function processFile(file) {
+  const type = document.getElementById('uploadType').value;
+  const maxSize = type==='video' ? 100*1024*1024 : 50*1024*1024;
+  if(file.size > maxSize) {
+    showToast(`⚠️ حجم فایل بیش از حد مجاز است (حداکثر ${type==='video'?'100':'50'} مگابایت)`, 'error');
+    return;
+  }
+  selectedFile = file;
+  document.getElementById('selectedFileName').textContent = '✅ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+}
+
+function uploadContent() {
+  const type = document.getElementById('uploadType').value;
+  const title = sanitize(document.getElementById('uploadTitle').value.trim());
+  const desc = sanitize(document.getElementById('uploadDesc').value.trim());
+  if(!title) { showToast('لطفاً عنوان را وارد کنید', 'error'); return; }
+
+  if(type==='text'||type==='poem') {
+    const textContent = document.getElementById('uploadTextContent').value.trim();
+    if(!textContent) { showToast('لطفاً متن را وارد کنید', 'error'); return; }
+    addContent({id: genId(), type, title, desc, textContent, timestamp: Date.now()});
+    resetUploadForm();
+    showToast('✅ محتوا با موفقیت بارگذاری شد!', 'success');
+    return;
+  }
+
+  if(!selectedFile) { showToast('لطفاً فایل را انتخاب کنید', 'error'); return; }
+  
+  const btn = document.getElementById('uploadBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> در حال بارگذاری...';
+  const pb = document.getElementById('progressBar');
+  const pf = document.getElementById('progressFill');
+  pb.style.display = 'block';
+  
+  const reader = new FileReader();
+  let prog = 0;
+  const interval = setInterval(() => { prog = Math.min(prog+10, 90); pf.style.width = prog+'%'; }, 100);
+  reader.onload = function(e) {
+    clearInterval(interval);
+    pf.style.width = '100%';
+    setTimeout(() => {
+      addContent({id: genId(), type, title, desc, dataUrl: e.target.result, fileName: selectedFile.name, fileSize: selectedFile.size, timestamp: Date.now()});
+      resetUploadForm();
+      pb.style.display = 'none';
+      pf.style.width = '0%';
+      btn.disabled = false;
+      btn.innerHTML = '<span id="uploadBtnText">آپلود محتوا</span>';
+      showToast('✅ محتوا با موفقیت بارگذاری شد!', 'success');
+    }, 300);
+  };
+  reader.onerror = () => {
+    clearInterval(interval);
+    btn.disabled = false;
+    btn.innerHTML = '<span id="uploadBtnText">آپلود محتوا</span>';
+    showToast('خطا در بارگذاری فایل', 'error');
+  };
+  reader.readAsDataURL(selectedFile);
+}
+
+function addContent(item) {
+  contents.unshift(item);
+  saveToStorage();
+  updateDashboard();
+}
+
+function resetUploadForm() {
+  document.getElementById('uploadTitle').value = '';
+  document.getElementById('uploadDesc').value = '';
+  document.getElementById('uploadTextContent').value = '';
+  document.getElementById('fileInput').value = '';
+  document.getElementById('selectedFileName').textContent = '';
+  selectedFile = null;
+}
+
+function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+
+// ===================== DELETE / EDIT =====================
+function deleteContent(id) {
+  if(!confirm('آیا از حذف این محتوا اطمینان دارید؟')) return;
+  contents = contents.filter(c => c.id !== id);
+  saveToStorage();
+  renderContents();
+  renderAdminTable();
+  updateDashboard();
+  showToast('🗑️ محتوا حذف شد', 'success');
+}
+
+function editContentModal(id) {
+  const c = contents.find(x=>x.id===id);
+  if(!c) return;
+  const newTitle = prompt('عنوان جدید:', c.title);
+  if(newTitle === null) return;
+  const newDesc = prompt('توضیحات جدید:', c.desc||'');
+  if(newTitle.trim()) {
+    c.title = sanitize(newTitle.trim());
+    c.desc = sanitize(newDesc||'');
+    saveToStorage();
+    renderAdminTable();
+    updateDashboard();
+    showToast('✅ محتوا ویرایش شد', 'success');
+  }
+}
+
+function editContent(id) { editContentModal(id); renderContents(); }
+
+// ===================== CUSTOMIZE =====================
+function loadCustomizeForm() {
+  document.getElementById('setSiteName').value = settings.siteName;
+  document.getElementById('setSiteTitle').value = settings.siteTitle;
+  document.getElementById('setLoginDesc').value = settings.loginDesc;
+  document.getElementById('colorPrimary').value = settings.primaryColor;
+  document.getElementById('colorBg').value = settings.bgColor;
+  document.getElementById('colorText').value = settings.textColor;
+}
+
+function liveCustomize() {
+  // live preview in app
+}
+
+function applyColors() {
+  const p = document.getElementById('colorPrimary').value;
+  const bg = document.getElementById('colorBg').value;
+  const t = document.getElementById('colorText').value;
+  document.getElementById('colorPrimaryHex').textContent = p;
+  document.getElementById('colorBgHex').textContent = bg;
+  document.getElementById('colorTextHex').textContent = t;
+  document.documentElement.style.setProperty('--primary', p);
+  document.documentElement.style.setProperty('--bg', bg);
+  document.documentElement.style.setProperty('--text', t);
+}
+
+function saveCustomize() {
+  settings.siteName = sanitize(document.getElementById('setSiteName').value.trim()) || 'فضای من';
+  settings.siteTitle = sanitize(document.getElementById('setSiteTitle').value.trim()) || 'محتوای سایت';
+  settings.loginDesc = sanitize(document.getElementById('setLoginDesc').value.trim()) || 'پلتفرم اشتراک‌گذاری محتوا';
+  settings.primaryColor = document.getElementById('colorPrimary').value;
+  settings.bgColor = document.getElementById('colorBg').value;
+  settings.textColor = document.getElementById('colorText').value;
+  saveToStorage();
+  applySettings();
+  showToast('✅ تنظیمات ذخیره شد!', 'success');
+}
+
+function applySettings() {
+  document.documentElement.style.setProperty('--primary', settings.primaryColor);
+  document.documentElement.style.setProperty('--bg', settings.bgColor);
+  document.documentElement.style.setProperty('--text', settings.textColor);
+  document.getElementById('siteTitle').textContent = settings.siteTitle;
+  // Apply to login
+  document.querySelector('.login-logo p').textContent = settings.loginDesc;
+}
+
+function loadSettings() {
+  applySettings();
+}
+
+// ===================== TOAST =====================
+function showToast(msg, type='success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3200);
+}
+
+// ===================== INIT =====================
+loadFromStorage();
+</script>
+</body>
+</html>
